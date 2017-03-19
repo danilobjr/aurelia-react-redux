@@ -1,5 +1,8 @@
 <template>
-    <require from="./bkn-datagrid/react-element"></require>
+    <require from="./bkn-datagrid/bkn-datagrid"></require>
 
-    <react-element data.bind="people"></react-element>
+    <bkn-datagrid 
+        data.bind="people"
+        config.bind="gridConfig"
+    ></bkn-datagrid>
 </template>

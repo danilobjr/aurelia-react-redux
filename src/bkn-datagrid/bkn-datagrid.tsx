@@ -1,16 +1,13 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import {customElement, inject, bindable, noView} from 'aurelia-framework';
-
-import { MyReactElement } from './components/MyReactElement';
+import {inject, bindable, noView} from 'aurelia-framework';
+import { BknDatagrid, IBknDatagridConfig } from './components/BknDatagrid';
 
 @noView()
 @inject(Element)
-@customElement('react-element')
-export class ReactElement {
-    // reactComponent = {};
-
+export class BknDatagridCustomElement {
     @bindable data: any[];
+    @bindable config: IBknDatagridConfig[];
 
     private element: Element;
     
@@ -19,9 +16,11 @@ export class ReactElement {
     }
     
     render() {
-        // this.reactComponent = 
         ReactDOM.render(
-            React.createElement(MyReactElement, { data: this.data }),
+            <BknDatagrid 
+                data={this.data} 
+                config={this.config}
+            />,
             this.element
         );
     }
