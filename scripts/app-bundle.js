@@ -164,5 +164,34 @@ define('bkn-datagrid/components/BknDatagrid',["require", "exports", "react"], fu
     exports.BknDatagrid = BknDatagrid;
 });
 
+define('bkn-datagrid/components/actions',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.SORT = 'bkn-datagrid.components.actions.SORT';
+    exports.OtherAction = { type: '' };
+    exports.sortByColumnName = function (columnName) { return ({
+        type: exports.SORT,
+        columnName: columnName
+    }); };
+});
+
+define('bkn-datagrid/components/reducers',["require", "exports", "./actions"], function (require, exports, actions_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var initialState = 'updatedAt';
+    exports.bknDatagridSortingReducer = function (state, action) {
+        if (state === void 0) { state = initialState; }
+        if (action === void 0) { action = actions_1.OtherAction; }
+        switch (action.type) {
+            case actions_1.SORT:
+                return Object.assign({}, state, {
+                    bknDatagridSortColumnName: action.columnName
+                });
+            default:
+                return state;
+        }
+    };
+});
+
 define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./bkn-datagrid/bkn-datagrid\"></require><bkn-datagrid data.bind=\"people\" config.bind=\"gridConfig\"></bkn-datagrid></template>"; });
 //# sourceMappingURL=app-bundle.js.map

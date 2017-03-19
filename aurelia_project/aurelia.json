@@ -140,6 +140,11 @@
             "name": "react-dom",
             "path": "../node_modules/react-dom/dist",
             "main": "react-dom.min"
+          },
+          {
+            "name": "redux",
+            "path": "../node_modules/redux/dist",
+            "main": "redux.min"
           }
         ]
       }
