@@ -1,4 +1,4 @@
-import { IBknDatagridConfig } from './bkn-datagrid/components/BknDatagrid'
+import { IBknDatagridHeader, IBknDatagridSorting } from './bkn-datagrid/components/BknDatagrid'
 
 export interface IPerson {
     id: number;
@@ -9,7 +9,8 @@ export interface IPerson {
 export class App {
     constructor(
         public people: IPerson[],
-        public gridConfig: IBknDatagridConfig[]
+        public gridHeaders: IBknDatagridHeader[],
+        public gridSorting: IBknDatagridSorting
     ) {
         this.people = [
             { id: 1, name: 'Danilo', email: 'danilo@beakyn.com' },
@@ -18,7 +19,7 @@ export class App {
             { id: 4, name: 'Juan', email: 'juan@beakyn.com' }
         ];
 
-        this.gridConfig = [
+        this.gridHeaders = [
             { 
                 key: 'name',
                 name: 'Name'
@@ -28,5 +29,10 @@ export class App {
                 name: 'Email'
             }
         ];
+
+        this.gridSorting = {
+            column: 'name',
+            asc: true
+        };
     }
 }

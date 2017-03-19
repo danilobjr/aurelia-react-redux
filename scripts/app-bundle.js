@@ -2,16 +2,17 @@ define('app',["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var App = (function () {
-        function App(people, gridConfig) {
+        function App(people, gridHeaders, gridSorting) {
             this.people = people;
-            this.gridConfig = gridConfig;
+            this.gridHeaders = gridHeaders;
+            this.gridSorting = gridSorting;
             this.people = [
                 { id: 1, name: 'Danilo', email: 'danilo@beakyn.com' },
                 { id: 2, name: 'Abraao', email: 'abraao@beakyn.com' },
                 { id: 3, name: 'Ricardo', email: 'ricardo@beakyn.com' },
                 { id: 4, name: 'Juan', email: 'juan@beakyn.com' }
             ];
-            this.gridConfig = [
+            this.gridHeaders = [
                 {
                     key: 'name',
                     name: 'Name'
@@ -21,6 +22,10 @@ define('app',["require", "exports"], function (require, exports) {
                     name: 'Email'
                 }
             ];
+            this.gridSorting = {
+                column: 'name',
+                asc: true
+            };
         }
         return App;
     }());
@@ -67,6 +72,37 @@ define('resources/index',["require", "exports"], function (require, exports) {
     exports.configure = configure;
 });
 
+define('bkn-datagrid/components/actions',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.SORT = 'bkn-datagrid.components.actions.SORT';
+    exports.sortByColumnName = function (columnName) { return ({
+        type: exports.SORT,
+        columnName: columnName
+    }); };
+});
+
+define('bkn-datagrid/components/reducers',["require", "exports", "./actions"], function (require, exports, actions_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var initialState = {
+        bknDatagridSortColumnName: 'updatedAt',
+        bknDatagridSortAscending: true
+    };
+    exports.bknDatagridSortingReducer = function (state, action) {
+        if (state === void 0) { state = initialState; }
+        switch (action.type) {
+            case actions_1.SORT:
+                return Object.assign({}, state, {
+                    bknDatagridSortColumnName: action.columnName,
+                    bknDatagridSortAscending: !state.bknDatagridSortAscending
+                });
+            default:
+                return state;
+        }
+    };
+});
+
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -76,21 +112,40 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-define('bkn-datagrid/bkn-datagrid',["require", "exports", "react", "react-dom", "aurelia-framework", "./components/BknDatagrid"], function (require, exports, React, ReactDOM, aurelia_framework_1, BknDatagrid_1) {
+define('bkn-datagrid/bkn-datagrid',["require", "exports", "react", "react-dom", "redux", "aurelia-framework", "./components/BknDatagrid", "./components/actions", "./components/reducers"], function (require, exports, React, ReactDOM, redux_1, aurelia_framework_1, BknDatagrid_1, actions_1, reducers_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var BknDatagridCustomElement = (function () {
         function BknDatagridCustomElement(element) {
+            this.store = redux_1.createStore(reducers_1.bknDatagridSortingReducer);
             this.element = element;
+            var state = this.store.getState();
+            console.log(this.sorting);
+            this.sorting = this.sorting || {
+                column: state.bknDatagridSortColumnName,
+                asc: state.bknDatagridSortAscending
+            };
+            console.log(this.sorting);
+            this.store.subscribe(this.update.bind(this));
         }
         BknDatagridCustomElement.prototype.render = function () {
-            ReactDOM.render(React.createElement(BknDatagrid_1.BknDatagrid, { data: this.data, config: this.config }), this.element);
+            var _this = this;
+            ReactDOM.render(React.createElement(BknDatagrid_1.BknDatagrid, { data: this.data, headers: this.headers, sorting: this.sorting, onSort: function (column) { return _this.sort(column); } }), this.element);
+        };
+        BknDatagridCustomElement.prototype.update = function () {
+            var state = this.store.getState();
+            this.sorting.column = state.bknDatagridSortColumnName;
+            this.sorting.asc = state.bknDatagridSortAscending;
+            console.log(this.sorting);
         };
         BknDatagridCustomElement.prototype.bind = function () {
             this.render();
         };
         BknDatagridCustomElement.prototype.dataChanged = function (newVal) {
             this.bind();
+        };
+        BknDatagridCustomElement.prototype.sort = function (column) {
+            this.store.dispatch(actions_1.sortByColumnName(column));
         };
         return BknDatagridCustomElement;
     }());
@@ -101,7 +156,11 @@ define('bkn-datagrid/bkn-datagrid',["require", "exports", "react", "react-dom", 
     __decorate([
         aurelia_framework_1.bindable,
         __metadata("design:type", Array)
-    ], BknDatagridCustomElement.prototype, "config", void 0);
+    ], BknDatagridCustomElement.prototype, "headers", void 0);
+    __decorate([
+        aurelia_framework_1.bindable,
+        __metadata("design:type", Object)
+    ], BknDatagridCustomElement.prototype, "sorting", void 0);
     BknDatagridCustomElement = __decorate([
         aurelia_framework_1.noView(),
         aurelia_framework_1.inject(Element),
@@ -127,7 +186,7 @@ define('bkn-datagrid/components/BknDatagrid',["require", "exports", "react"], fu
         __extends(BknDatagrid, _super);
         function BknDatagrid(props) {
             var _this = _super.call(this, props) || this;
-            _this.dataPropertiesForRenderTableCells = _this.props.config.map(function (c) { return c.key; });
+            _this.dataPropertiesForRenderTableCells = _this.props.headers.map(function (c) { return c.key; });
             return _this;
         }
         BknDatagrid.prototype.render = function () {
@@ -140,13 +199,14 @@ define('bkn-datagrid/components/BknDatagrid',["require", "exports", "react"], fu
                     React.createElement("tbody", null, this.renderBody()))));
         };
         BknDatagrid.prototype.renderHeaders = function () {
-            return this.props.config.map(function (c, index) {
-                return React.createElement("th", { key: index }, c.name);
+            var _a = this.props, headers = _a.headers, onSort = _a.onSort;
+            return headers.map(function (c, index) {
+                return React.createElement("th", { key: index, onClick: function () { return onSort(c.key); } }, c.name);
             });
         };
         BknDatagrid.prototype.renderBody = function () {
             var _this = this;
-            var _a = this.props, config = _a.config, data = _a.data;
+            var _a = this.props, headers = _a.headers, data = _a.data;
             return data.map(function (d, index) {
                 return React.createElement("tr", { key: index }, _this.renderCells(d));
             });
@@ -164,34 +224,5 @@ define('bkn-datagrid/components/BknDatagrid',["require", "exports", "react"], fu
     exports.BknDatagrid = BknDatagrid;
 });
 
-define('bkn-datagrid/components/actions',["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.SORT = 'bkn-datagrid.components.actions.SORT';
-    exports.OtherAction = { type: '' };
-    exports.sortByColumnName = function (columnName) { return ({
-        type: exports.SORT,
-        columnName: columnName
-    }); };
-});
-
-define('bkn-datagrid/components/reducers',["require", "exports", "./actions"], function (require, exports, actions_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var initialState = 'updatedAt';
-    exports.bknDatagridSortingReducer = function (state, action) {
-        if (state === void 0) { state = initialState; }
-        if (action === void 0) { action = actions_1.OtherAction; }
-        switch (action.type) {
-            case actions_1.SORT:
-                return Object.assign({}, state, {
-                    bknDatagridSortColumnName: action.columnName
-                });
-            default:
-                return state;
-        }
-    };
-});
-
-define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./bkn-datagrid/bkn-datagrid\"></require><bkn-datagrid data.bind=\"people\" config.bind=\"gridConfig\"></bkn-datagrid></template>"; });
+define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./bkn-datagrid/bkn-datagrid\"></require><bkn-datagrid data.bind=\"people\" headers.bind=\"gridHeaders\" sorting.bind=\"gridSorting\"></bkn-datagrid></template>"; });
 //# sourceMappingURL=app-bundle.js.map

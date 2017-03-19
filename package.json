@@ -8,7 +8,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@types/redux": "^3.6.0",
     "aurelia-animator-css": "^1.0.1",
     "aurelia-bootstrapper": "^2.1.0",
     "bluebird": "^3.4.1",
@@ -24,6 +23,7 @@
     "@types/node": "^6.0.45",
     "@types/react": "^15.0.16",
     "@types/react-dom": "^0.14.23",
+    "@types/redux": "^3.6.0",
     "aurelia-cli": "^0.26.1",
     "aurelia-testing": "^1.0.0-beta.2.0.1",
     "aurelia-tools": "^1.0.0",

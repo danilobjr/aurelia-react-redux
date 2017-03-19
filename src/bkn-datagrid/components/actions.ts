@@ -6,9 +6,6 @@ export type SortAction = {
     columnName: string;
 };
 
-export type OtherAction = { type: '' };
-export const OtherAction: OtherAction = { type: '' };
-
 export const sortByColumnName = (columnName: string): SortAction => ({
     type: SORT,
     columnName

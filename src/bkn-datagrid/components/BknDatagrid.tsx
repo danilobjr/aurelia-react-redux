@@ -1,13 +1,20 @@
 import * as React from 'react';
 
-interface IBknDatagridConfig {
-    key: string;
+interface IBknDatagridHeader {
+    key: string; 
     name: string;
+}
+
+interface IBknDatagridSorting {
+    column: string; 
+    asc: boolean;
 }
 
 interface IProps {
     data: any[];
-    config: IBknDatagridConfig[];
+    headers: IBknDatagridHeader[];
+    sorting: IBknDatagridSorting;
+    onSort: (column: string) => void;
 }
 
 class BknDatagrid extends React.Component<IProps, any> {
@@ -16,7 +23,7 @@ class BknDatagrid extends React.Component<IProps, any> {
     constructor(props: IProps) {
         super(props);
 
-        this.dataPropertiesForRenderTableCells = this.props.config.map(c => c.key);
+        this.dataPropertiesForRenderTableCells = this.props.headers.map(c => c.key);
     }
 
     static defaultProperties: Partial<IProps> = {
@@ -39,13 +46,15 @@ class BknDatagrid extends React.Component<IProps, any> {
     }
 
     renderHeaders() {
-        return this.props.config.map((c, index) => 
-            <th key={index}>{c.name}</th>
+        const { headers, onSort } = this.props;
+
+        return headers.map((c, index) => 
+            <th key={index} onClick={() => onSort(c.key)}>{c.name}</th>
         );
     }
 
     renderBody() {
-        const { config, data }: IProps = this.props;
+        const { headers, data }: IProps = this.props;
 
         return data.map((d, index) => 
             <tr key={index}>
@@ -63,5 +72,6 @@ class BknDatagrid extends React.Component<IProps, any> {
 
 export {
     BknDatagrid,
-    IBknDatagridConfig
+    IBknDatagridHeader,
+    IBknDatagridSorting
 }
