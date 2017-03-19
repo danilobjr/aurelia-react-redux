@@ -21,14 +21,10 @@ export class BknDatagridCustomElement {
 
         const state = this.store.getState();
 
-        console.log(this.sorting);
-
         this.sorting = this.sorting || {
             column: state.bknDatagridSortColumnName,
             asc: state.bknDatagridSortAscending
         };
-
-        console.log(this.sorting);
 
         this.store.subscribe(this.update.bind(this))
     }
