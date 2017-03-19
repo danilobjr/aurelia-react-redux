@@ -1,5 +1,5 @@
 {
-  "name": "bkn-datagrid-poc-aurelia-react-typescript",
+  "name": "poc-aurelia-react-redux-typescript",
   "type": "project:application",
   "platform": {
     "id": "web",
@@ -14,7 +14,7 @@
     "dtsSource": [
       "./custom_typings/**/*.d.ts"
     ],
-    "source": "src/**/*.ts"
+    "source": ["src/**/*.ts", "src/**/*.tsx"]
   },
   "markupProcessor": {
     "id": "minimum",
@@ -130,6 +130,21 @@
             "path": "../node_modules/aurelia-testing/dist/amd",
             "main": "aurelia-testing",
             "env": "dev"
+          },
+          {
+            "name": "react",
+            "path": "../node_modules/react/dist",
+            "main": "react.min"
+          },
+          {
+            "name": "react-dom",
+            "path": "../node_modules/react-dom/dist",
+            "main": "react-dom.min"
+          },
+          {
+            "name": "redux",
+            "path": "../node_modules/redux/dist",
+            "main": "redux.min"
           }
         ]
       }

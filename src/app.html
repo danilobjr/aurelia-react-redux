@@ -1,3 +1,9 @@
 <template>
-  <h1>${message}</h1>
+    <require from="./bkn-datagrid/bkn-datagrid"></require>
+
+    <bkn-datagrid 
+        data.bind="people"
+        headers.bind="gridHeaders"
+        sorting.bind="gridSorting"
+    ></bkn-datagrid>
 </template>
