@@ -1,5 +1,5 @@
 {
-  "name": "poc-aurelia-react-redux-typescript",
+  "name": "aurelia-react-redux",
   "type": "project:application",
   "platform": {
     "id": "web",
