@@ -1,23 +1,24 @@
 import * as React from 'react';
+import { SortDirection } from './../SortDirection'
 
-interface IBknDatagridHeader {
+interface IDatagridHeader {
     key: string; 
     name: string;
 }
 
-interface IBknDatagridSorting {
-    column: string; 
-    asc: boolean;
+interface IDatagridSorting {
+    columnKey: string; 
+    direction: SortDirection;
 }
 
 interface IProps {
     data: any[];
-    headers: IBknDatagridHeader[];
-    sorting: IBknDatagridSorting;
+    headers: IDatagridHeader[];
+    sorting: IDatagridSorting;
     onSort: (column: string) => void;
 }
 
-class BknDatagrid extends React.Component<IProps, any> {
+class Datagrid extends React.Component<IProps, any> {
     private dataPropertiesForRenderTableCells: string[];
 
     constructor(props: IProps) {
@@ -71,7 +72,7 @@ class BknDatagrid extends React.Component<IProps, any> {
 }
 
 export {
-    BknDatagrid,
-    IBknDatagridHeader,
-    IBknDatagridSorting
+    Datagrid,
+    IDatagridHeader,
+    IDatagridSorting
 }

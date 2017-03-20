@@ -1,4 +1,6 @@
-import { IBknDatagridHeader, IBknDatagridSorting } from './bkn-datagrid/components/BknDatagrid'
+import { IDatagridHeader, IDatagridSorting } from './datagrid/components/Datagrid'
+import { SortDirection } from './datagrid/SortDirection'
+import { store } from './store'
 
 export interface IPerson {
     id: number;
@@ -7,10 +9,12 @@ export interface IPerson {
 }
 
 export class App {
+    private store: any = store;
+
     constructor(
         public people: IPerson[],
-        public gridHeaders: IBknDatagridHeader[],
-        public gridSorting: IBknDatagridSorting
+        public gridHeaders: IDatagridHeader[],
+        public gridSorting: IDatagridSorting
     ) {
         this.people = [
             { id: 1, name: 'Danilo', email: 'danilo@beakyn.com' },
@@ -31,8 +35,17 @@ export class App {
         ];
 
         this.gridSorting = {
-            column: 'name',
-            asc: true
+            columnKey: 'name',
+            direction: SortDirection.Asc
         };
+
+        const state = this.store.getState();
+        console.log(state.datagrid);
+        this.store.subscribe(this.update.bind(this));
+    }
+
+    update() {
+        const state = this.store.getState();
+        console.log(state.datagrid);
     }
 }
