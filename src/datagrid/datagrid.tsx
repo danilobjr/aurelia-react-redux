@@ -5,6 +5,7 @@ import { inject, bindable, noView } from 'aurelia-framework';
 import { Datagrid, IDatagridHeader, IDatagridSorting } from './components/Datagrid';
 import { sortByColumnName } from './actions';
 import { store, IState } from './../store'
+import { IPerson } from './../app'
 
 @noView()
 @inject(Element)
@@ -26,28 +27,19 @@ export class DatagridCustomElement {
             columnKey: state.datagrid.sortColumnKey,
             direction: state.datagrid.sortDirection
         };
-
-        // this.store.subscribe(this.update.bind(this))
     }
     
     render() {
         ReactDOM.render(
-            <Datagrid 
+            <Datagrid
                 data={this.data} 
                 headers={this.headers}
                 sorting={this.sorting}
-                onSort={(column) => this.sort(column)}
+                onSort={this.sort}
             />,
             this.element
         );
     }
-
-    // update() {
-    //     const state = this.store.getState() as IState;
-    //     this.sorting.columnKey = state.datagrid.sortColumnKey;
-    //     this.sorting.direction = state.datagrid.sortDirection;
-    //     console.log(this.sorting);
-    // }
     
     bind() {
         this.render();
@@ -68,7 +60,7 @@ export class DatagridCustomElement {
         this.bind();
     }
 
-    sort(column: string) {
+    sort = (column: string) => {
         this.store.dispatch(sortByColumnName(column));
     }
 }

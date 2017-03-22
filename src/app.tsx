@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { IDatagridHeader, IDatagridSorting } from './datagrid/components/Datagrid'
 import { SortDirection } from './datagrid/SortDirection'
 import { store } from './store'
@@ -5,7 +6,7 @@ import { store } from './store'
 export interface IPerson {
     id: number;
     name: string;
-    email: string;
+    email: string | JSX.Element;
 }
 
 export class App {
@@ -16,21 +17,27 @@ export class App {
         public gridHeaders: IDatagridHeader[],
         public gridSorting: IDatagridSorting
     ) {
-        this.people = [
+        const peopleMapped = [
             { id: 1, name: 'Danilo', email: 'danilo@beakyn.com' },
             { id: 2, name: 'Abraao', email: 'abraao@beakyn.com' },
             { id: 3, name: 'Ricardo', email: 'ricardo@beakyn.com' },
             { id: 4, name: 'Juan', email: 'juan@beakyn.com' }
         ];
 
+        this.people = peopleMapped.map(p => ({
+            id: p.id,
+            name: p.name,
+            email: <a href={`mailto:${p.email}`}>{p.email}</a> 
+        }));
+
         this.gridHeaders = [
             { 
                 key: 'name',
-                name: 'Name'
+                render: 'Name'
             },
             { 
                 key: 'email',
-                name: 'Email'
+                render: <strong style={{ color: 'red', textTransform: 'uppercase' }}>Name</strong>
             }
         ];
 

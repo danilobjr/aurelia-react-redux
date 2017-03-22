@@ -1,4 +1,4 @@
-define('app',["require", "exports", "./datagrid/SortDirection", "./store"], function (require, exports, SortDirection_1, store_1) {
+define('app',["require", "exports", "react", "./datagrid/SortDirection", "./store"], function (require, exports, React, SortDirection_1, store_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var App = (function () {
@@ -7,20 +7,25 @@ define('app',["require", "exports", "./datagrid/SortDirection", "./store"], func
             this.gridHeaders = gridHeaders;
             this.gridSorting = gridSorting;
             this.store = store_1.store;
-            this.people = [
+            var peopleMapped = [
                 { id: 1, name: 'Danilo', email: 'danilo@beakyn.com' },
                 { id: 2, name: 'Abraao', email: 'abraao@beakyn.com' },
                 { id: 3, name: 'Ricardo', email: 'ricardo@beakyn.com' },
                 { id: 4, name: 'Juan', email: 'juan@beakyn.com' }
             ];
+            this.people = peopleMapped.map(function (p) { return ({
+                id: p.id,
+                name: p.name,
+                email: React.createElement("a", { href: "mailto:" + p.email }, p.email)
+            }); });
             this.gridHeaders = [
                 {
                     key: 'name',
-                    name: 'Name'
+                    render: 'Name'
                 },
                 {
                     key: 'email',
-                    name: 'Email'
+                    render: React.createElement("strong", { style: { color: 'red', textTransform: 'uppercase' } }, "Name")
                 }
             ];
             this.gridSorting = {
@@ -147,8 +152,12 @@ define('datagrid/datagrid',["require", "exports", "react", "react-dom", "aurelia
     Object.defineProperty(exports, "__esModule", { value: true });
     var DatagridCustomElement = (function () {
         function DatagridCustomElement(element) {
+            var _this = this;
             this.element = element;
             this.store = store_1.store;
+            this.sort = function (column) {
+                _this.store.dispatch(actions_1.sortByColumnName(column));
+            };
             this.element = element;
             var state = this.store.getState();
             this.sorting = this.sorting || {
@@ -157,17 +166,13 @@ define('datagrid/datagrid',["require", "exports", "react", "react-dom", "aurelia
             };
         }
         DatagridCustomElement.prototype.render = function () {
-            var _this = this;
-            ReactDOM.render(React.createElement(Datagrid_1.Datagrid, { data: this.data, headers: this.headers, sorting: this.sorting, onSort: function (column) { return _this.sort(column); } }), this.element);
+            ReactDOM.render(React.createElement(Datagrid_1.Datagrid, { data: this.data, headers: this.headers, sorting: this.sorting, onSort: this.sort }), this.element);
         };
         DatagridCustomElement.prototype.bind = function () {
             this.render();
         };
         DatagridCustomElement.prototype.dataChanged = function (newVal) {
             this.bind();
-        };
-        DatagridCustomElement.prototype.sort = function (column) {
-            this.store.dispatch(actions_1.sortByColumnName(column));
         };
         return DatagridCustomElement;
     }());
@@ -223,7 +228,7 @@ define('datagrid/components/Datagrid',["require", "exports", "react"], function 
         Datagrid.prototype.renderHeaders = function () {
             var _a = this.props, headers = _a.headers, onSort = _a.onSort;
             return headers.map(function (c, index) {
-                return React.createElement("th", { key: index, onClick: function () { return onSort(c.key); } }, c.name);
+                return (React.createElement("th", { key: index, onClick: function () { return onSort(c.key); } }, c.render));
             });
         };
         Datagrid.prototype.renderBody = function () {

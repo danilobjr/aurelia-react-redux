@@ -3,7 +3,7 @@ import { SortDirection } from './../SortDirection'
 
 interface IDatagridHeader {
     key: string; 
-    name: string;
+    render: string | JSX.Element;
 }
 
 interface IDatagridSorting {
@@ -27,7 +27,7 @@ class Datagrid extends React.Component<IProps, any> {
         this.dataPropertiesForRenderTableCells = this.props.headers.map(c => c.key);
     }
 
-    static defaultProperties: Partial<IProps> = {
+    static defaultProperties = {
         data: []
     }
     
@@ -49,9 +49,11 @@ class Datagrid extends React.Component<IProps, any> {
     renderHeaders() {
         const { headers, onSort } = this.props;
 
-        return headers.map((c, index) => 
-            <th key={index} onClick={() => onSort(c.key)}>{c.name}</th>
-        );
+        return headers.map((c, index) => {
+            return (
+                <th key={index} onClick={() => onSort(c.key)}>{c.render}</th>
+            );
+        });
     }
 
     renderBody() {
