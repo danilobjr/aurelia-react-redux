@@ -17,14 +17,14 @@ export class App {
         public gridHeaders: IDatagridHeader[],
         public gridSorting: IDatagridSorting
     ) {
-        const peopleDataFromServer = [
+        const peopleFakeDataFromServer = [
             { id: 1, name: 'Danilo', email: 'danilo@beakyn.com' },
             { id: 2, name: 'Abraao', email: 'abraao@beakyn.com' },
             { id: 3, name: 'Ricardo', email: 'ricardo@beakyn.com' },
             { id: 4, name: 'Juan', email: 'juan@beakyn.com' }
         ];
 
-        this.people = peopleDataFromServer.map(p => ({
+        this.people = peopleFakeDataFromServer.map(p => ({
             id: p.id,
             name: p.name,
             email: <a href={`mailto:${p.email}`}>{p.email}</a> 
